@@ -2,7 +2,9 @@ import struct
 
 import serial
 
-ser = serial.Serial('/dev/ttyTHS1', 38400, timeout=0.050)  # open serial port
+# ser = serial.Serial('/dev/ttyTHS1', 38400, timeout=0.050)  # open serial port
+ser = serial.Serial('COM12', 38400, timeout=0.050)  # open serial port
+
 is_break = True
 
 
@@ -15,10 +17,13 @@ def rotate(speed):
     ser.write(command_bytes)
 
 
-
 while is_break:
     rotate(60)
-    s = ser.read_until('0xABCD', 22)
+    start_byte = ser.read()
+    if start_byte[0] != 0xCD:
+        continue
+
+    s = ser.read(21)
     #   typedef struct{
     #    uint16_t start;
     #    int16_t 	cmd1;
@@ -32,7 +37,7 @@ while is_break:
     #    uint16_t cmdLed;
     #    uint16_t checksum;
     # } SerialFeedback;
-    feedback = struct.unpack('<HhhhhhhhhHH', s)
+    feedback = struct.unpack('<BhhhhhhhhHH', s)
     cmd1 = feedback[1]
     cmd2 = feedback[2]
     speedR_meas = feedback[3]
@@ -41,11 +46,13 @@ while is_break:
     errorL = feedback[6]
     batVoltage = feedback[7]
     cmdLed = feedback[8]
-    print('speedR_meas : ',
-          speedR_meas,
-          'errorR : ', errorR,
-          'speedL_meas : ', speedL_meas,
-          'errorL : ', errorL,
-          'batVoltage : ', batVoltage)
+    print(
+        'cmd1 : ', speedR_meas,
+        'cmd2 : ', speedR_meas,
+        'speedR_meas : ', speedR_meas,
+        'errorR : ', errorR,
+        'speedL_meas : ', speedL_meas,
+        'errorL : ', errorL,
+        'batVoltage : ', batVoltage)
 
 ser.close()
