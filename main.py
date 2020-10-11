@@ -2,7 +2,7 @@ import struct
 
 import serial
 
-ser = serial.Serial('COM12', 38400, timeout=0.050)  # open serial port
+ser = serial.Serial('/dev/ttyTHS1', 38400, timeout=0.050)  # open serial port
 is_break = True
 
 
