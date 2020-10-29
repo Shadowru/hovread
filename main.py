@@ -3,8 +3,8 @@ import time
 
 import serial
 
-# ser = serial.Serial('/dev/ttyTHS1', 38400, timeout=0.050)  # open serial port
-ser = serial.Serial('COM12', 115200, timeout=0.05)  # open serial port
+ser = serial.Serial('/dev/ttyTHS1', 115200, timeout=0.050)  # open serial port
+#ser = serial.Serial('COM12', 115200, timeout=0.05)  # open serial port
 ser.set_buffer_size(rx_size = 100, tx_size = 20)
 
 is_break = True
